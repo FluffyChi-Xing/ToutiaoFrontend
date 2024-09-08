@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import { useRoute } from "vue-router";
-import { Document, Location, Odometer, Setting} from "@element-plus/icons-vue";
+import { useRoute, useRouter } from "vue-router";
+import {Document, Edit, FolderOpened, Odometer, User} from "@element-plus/icons-vue";
 import LogOut from "@/components/LogOut.vue";
-// TODO: 将侧边栏改为递归组件
 
 
 const route = useRoute()
+const router = useRouter()
 /** ===== 菜单高亮-start ===== **/
 const defaultActive = ref("1");
 function checkHighLight(e: string) {
+  // 解决仪表盘子页面刷新后高亮问题
+  if (e.includes('/dashboard')) {
+    defaultActive.value = "1";
+  }
   switch (e) {
     case "1":
       defaultActive.value = "1";
@@ -23,6 +27,19 @@ watch(() => route.fullPath, (to: string) => {
   checkHighLight(to)
 })
 /** ===== 菜单高亮-end ===== **/
+
+/** ===== 菜单跳转-start ===== **/
+function handleSelect(index: string) {
+  switch (index) {
+    case "1" :
+      router.push('/dashboard/home')
+          break;
+    case "2" :
+      router.push('/dashboard/publish')
+          break;
+  }
+}
+/** ===== 菜单跳转-end ===== **/
 </script>
 
 <template>
@@ -32,6 +49,7 @@ watch(() => route.fullPath, (to: string) => {
         class="el-menu-vertical-demo h-full relative"
         active-text-color="#ffffff"
         style="background-color: transparent"
+        @select="handleSelect"
     >
       <div class="w-full h-24 flex flex-col justify-center items-center">
         <div class="w-1/2 h-1/2 flex menu-header" />
@@ -41,16 +59,20 @@ watch(() => route.fullPath, (to: string) => {
         <span>仪表盘</span>
       </el-menu-item>
       <el-menu-item index="2">
-        <el-icon><location /></el-icon>
-        <span>Navigator Two</span>
+        <el-icon><Edit /></el-icon>
+        <span>发布文章</span>
       </el-menu-item>
       <el-menu-item index="3">
-        <el-icon><document /></el-icon>
-        <span>Navigator Three</span>
+        <el-icon><FolderOpened /></el-icon>
+        <span>内容列表</span>
       </el-menu-item>
       <el-menu-item index="4">
-        <el-icon><setting /></el-icon>
-        <span>Navigator Four</span>
+        <el-icon><Document /></el-icon>
+        <span>素材管理</span>
+      </el-menu-item>
+      <el-menu-item index="5">
+        <el-icon><User /></el-icon>
+        <span>粉丝管理</span>
       </el-menu-item>
       <div class="w-full h-24 p-4 absolute bottom-0">
         <div class="w-full h-full flex flex-col items-center justify-center">

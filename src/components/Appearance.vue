@@ -15,27 +15,21 @@ const props = withDefaults(defineProps<{
   iconColor: '#31a7ff',
   bgColor: '#84bffc'
 })
-
-const IconColor = computed(() => {
-  return props.iconColor ? `bg-[${props.iconColor}]` : 'bg-red-950'
-})
-const BgColor = computed(() => {
-  return props.bgColor ? `bg-[${props.bgColor}]` : 'bg-red-950'
-})
 </script>
 
 <template>
   <div
-      class="w-60 h-auto grid grid-cols-4 gap-2 p-4 rounded-[10px]"
-      :class="BgColor"
+      class="w-60 h-auto grid grid-cols-4 cursor-pointer hover:shadow-md appearance gap-2 rounded-[10px]"
+      :style="{ background: bgColor }"
   >
     <div class="w-full h-auto flex col-span-1 flex-col justify-center items-center">
       <div
-          class="w-[50px] h-[50px] flex rounded-[25px]"
-          :class="IconColor"
+          class="w-[50px] h-[50px] flex rounded-[25px] justify-center items-center"
+          :style="{ background: iconColor }"
       >
         <SvgIcon
             :icon="props.icon"
+            :style="{ fontColor: '#fff' }"
             size="30"
         />
       </div>
@@ -44,7 +38,7 @@ const BgColor = computed(() => {
       <div class="w-full h-1/2 flex whitespace-nowrap text-ellipsis overflow-hidden">
         <span
             class="text-xl font-bold"
-            :class="`text-[${props.iconColor}]`"
+            :style="{ color: iconColor }"
         >
           {{ number }}
         </span>
@@ -57,5 +51,8 @@ const BgColor = computed(() => {
 </template>
 
 <style scoped>
-
+.appearance {
+  padding: 16px;
+  transition: all ease 0.3s;
+}
 </style>
