@@ -1,6 +1,7 @@
 # ToutiaoFrontend
 
 This template should help get you started developing with Vue 3 in Vite.
+![image](https://github.com/user-attachments/assets/e1f72dcb-bcef-4f9c-8e21-cec384a10b35)
 
 ## Recommended IDE Setup
 
