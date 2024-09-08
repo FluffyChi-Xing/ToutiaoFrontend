@@ -13,7 +13,6 @@
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/css/mixin";
 :deep(.el-card__body) {
   padding: 0;
   width: 100%;

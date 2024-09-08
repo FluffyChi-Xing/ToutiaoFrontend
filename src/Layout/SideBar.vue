@@ -2,6 +2,7 @@
 import {onMounted, ref, watch} from "vue";
 import { useRoute } from "vue-router";
 import { Document, Location, Odometer, Setting} from "@element-plus/icons-vue";
+import LogOut from "@/components/LogOut.vue";
 // TODO: 将侧边栏改为递归组件
 
 
@@ -28,9 +29,13 @@ watch(() => route.fullPath, (to: string) => {
   <div class="w-full h-full flex flex-col">
     <el-menu
         :default-active="defaultActive"
-        class="el-menu-vertical-demo h-full"
+        class="el-menu-vertical-demo h-full relative"
+        active-text-color="#ffffff"
+        style="background-color: transparent"
     >
-      <div class="w-full h-24" />
+      <div class="w-full h-24 flex flex-col justify-center items-center">
+        <div class="w-1/2 h-1/2 flex menu-header" />
+      </div>
       <el-menu-item index="1">
         <el-icon><Odometer /></el-icon>
         <span>仪表盘</span>
@@ -47,6 +52,11 @@ watch(() => route.fullPath, (to: string) => {
         <el-icon><setting /></el-icon>
         <span>Navigator Four</span>
       </el-menu-item>
+      <div class="w-full h-24 p-4 absolute bottom-0">
+        <div class="w-full h-full flex flex-col items-center justify-center">
+          <LogOut />
+        </div>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -54,5 +64,24 @@ watch(() => route.fullPath, (to: string) => {
 <style scoped>
 :deep(.el-menu) {
   border-right: none;
+}
+.el-menu {
+  .el-menu-item {
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    &:hover {
+      background-color: rgba(148, 143, 139, 0.8);
+      transition: all ease-in-out 0.5s;
+    }
+    &.is-active {
+      background-color: rgba(148, 143, 139, 0.8);
+    }
+  }
+}
+.menu-header {
+  background-image: url("@/assets/img/logo_heima_admin@2x.efa65eb.png");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 </style>

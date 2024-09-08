@@ -1,0 +1,26 @@
+@mixin primary_danger_color {
+  background-color: theme('colors.danger') !important;
+  color: theme('colors.white') !important;
+}
+
+@mixin primary_btn_success_color {
+  background-color: theme('colors.success') !important;
+  color: theme('colors.white') !important;
+}
+
+@mixin primary_btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.primary-danger-btn {
+  @include primary_danger_color;
+  @include primary_btn;
+}
+
+.primary-success-btn {
+  @include primary_btn_success_color;
+  @include primary_btn;
+}
