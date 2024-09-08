@@ -9,6 +9,7 @@ import 'nprogress/nprogress.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import '@/assets/iconfont/iconfont.js'
 import '@/assets/iconfont/iconfont.css'
+// import '@/componsables/mock'
 
 
 const app = createApp(App)

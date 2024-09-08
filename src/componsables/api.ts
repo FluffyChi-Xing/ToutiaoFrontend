@@ -1,1 +1,4 @@
-export const $api = {}
+import * as ContentData from './apis/ContentData'
+export const $api = {
+    ...ContentData
+}

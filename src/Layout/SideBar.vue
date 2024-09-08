@@ -14,9 +14,18 @@ function checkHighLight(e: string) {
   if (e.includes('/dashboard')) {
     defaultActive.value = "1";
   }
+  if (e.includes('/contentList')) {
+    defaultActive.value = "3";
+  }
   switch (e) {
-    case "1":
+    case "/dashboard/home":
       defaultActive.value = "1";
+      break;
+    case "/sendPaper":
+      defaultActive.value = "2";
+      break;
+    case "/contentList":
+      defaultActive.value = "3";
       break;
   }
 }
@@ -35,7 +44,10 @@ function handleSelect(index: string) {
       router.push('/dashboard/home')
           break;
     case "2" :
-      router.push('/dashboard/publish')
+      router.push('/sendPaper')
+          break;
+    case '3':
+      router.push('/contentList')
           break;
   }
 }
@@ -43,7 +55,7 @@ function handleSelect(index: string) {
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col">
+  <div class="w-full h-full menu-bg flex flex-col">
     <el-menu
         :default-active="defaultActive"
         class="el-menu-vertical-demo h-full relative"
@@ -84,9 +96,6 @@ function handleSelect(index: string) {
 </template>
 
 <style scoped>
-:deep(.el-menu) {
-  border-right: none;
-}
 .el-menu {
   .el-menu-item {
     border-radius: 15px;
@@ -105,5 +114,10 @@ function handleSelect(index: string) {
   background-image: url("@/assets/img/logo_heima_admin@2x.efa65eb.png");
   background-repeat: no-repeat;
   background-size: contain;
+}
+.menu-bg {
+  background-image: url("@/assets/img/dot.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

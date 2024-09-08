@@ -12,8 +12,10 @@
   padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
+  border: none;
   transition: 0.4s;
 }
+
 
 .primary-danger-btn {
   @include primary_danger_color;
@@ -23,4 +25,12 @@
 .primary-success-btn {
   @include primary_btn_success_color;
   @include primary_btn;
+}
+
+.primary_success_tag {
+  @include primary_btn_success_color
+}
+
+.primary_danger_tag {
+  @include primary_danger_color
 }

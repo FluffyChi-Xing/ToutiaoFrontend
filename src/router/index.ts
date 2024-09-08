@@ -6,6 +6,7 @@ import DashBoard from '../views/DashBoard/index.vue'
 import AnalysisPage from "@/views/DashBoard/_component/AnalysisPage.vue";
 import HomePage from "@/views/DashBoard/_component/HomePage.vue";
 import MoreInformation from "@/views/DashBoard/_component/MoreInformation.vue";
+import PaperList from "@/views/ContentList/_component/PaperList.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -46,6 +47,32 @@ const router = createRouter({
               },
             }
           ]
+        },
+        {
+          path: '/sendPaper',
+          name: 'sendPaper',
+          meta: {
+            title: '发布文章'
+          },
+          component: () => import('@/views/SendPaper/index.vue')
+        },
+        {
+          path: '/contentList',
+          name: 'contentList',
+          meta: {
+            title: '内容列表'
+          },
+          component: () => import('@/views/ContentList/index.vue'),
+          children: [
+            {
+              path: '/contentList/paperList',
+              name: 'paperList',
+              meta: {
+                title: '文章列表'
+              },
+              component: PaperList
+            }
+          ]
         }
       ]
     }
@@ -57,8 +84,12 @@ router.beforeEach(async (to) => {
   if (to.meta.title) {
     document.title = String(to.meta.title);
   }
+  // 处理路由重定向
   if (to.path === '/') {
     return '/dashboard/home'
+  }
+  if (to.path === '/contentList') {
+    return '/contentList/paperList'
   }
 })
 

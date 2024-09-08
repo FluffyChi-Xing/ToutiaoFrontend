@@ -1,10 +1,12 @@
 <script setup lang="ts">
-
 import SideBar from "@/Layout/SideBar.vue";
 </script>
 
 <template>
-  <div class="w-screen h-screen menu-bg overflow-hidden">
+  <div
+      class="w-screen h-screen overflow-hidden"
+      style="background-color: #F2F3F5"
+  >
     <el-container class="w-full h-full">
       <el-aside width="240px" class="h-full">
         <SideBar />
@@ -21,10 +23,5 @@ import SideBar from "@/Layout/SideBar.vue";
 <style scoped>
 :deep(.el-main) {
   padding: 0;
-}
-.menu-bg {
-  background-image: url("@/assets/img/dot.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 </style>
