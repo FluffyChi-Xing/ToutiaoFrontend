@@ -11,7 +11,8 @@ export default {
         white: '#FFFFFF',
         success: '#67C23A',
         warning: '#E6A23C',
-        pageBg: '#F2F3F5'
+        pageBg: '#F2F3F5',
+        primary: '#409EFF',
       }
     },
   },

@@ -73,6 +73,14 @@ const router = createRouter({
               component: PaperList
             }
           ]
+        },
+        {
+          path: '/resource',
+          name: 'resource',
+          meta: {
+            title: '素材管理'
+          },
+          component: () => import('@/views/ResourceManage/index.vue')
         }
       ]
     }
