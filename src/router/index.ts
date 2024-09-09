@@ -81,6 +81,14 @@ const router = createRouter({
             title: '素材管理'
           },
           component: () => import('@/views/ResourceManage/index.vue')
+        },
+        {
+          path: '/fans',
+          name: 'fans',
+          meta: {
+            title: '粉丝管理'
+          },
+          component: () => import('@/views/FanManage/index.vue')
         }
       ]
     }

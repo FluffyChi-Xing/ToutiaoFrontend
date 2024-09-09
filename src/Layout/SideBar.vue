@@ -30,6 +30,9 @@ function checkHighLight(e: string) {
     case "/resource":
       defaultActive.value = "4";
       break;
+    case "/fans":
+      defaultActive.value = "5";
+      break;
   }
 }
 onMounted(() => {
@@ -54,6 +57,9 @@ function handleSelect(index: string) {
           break;
     case '4':
       router.push('/resource')
+          break;
+    case '5':
+      router.push('/fans')
           break;
   }
 }
