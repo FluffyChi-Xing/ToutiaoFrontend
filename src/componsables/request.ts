@@ -1,6 +1,6 @@
 import axios from "axios";
 
-enum requestEnums {
+export enum requestEnums {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',

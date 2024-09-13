@@ -5,6 +5,7 @@ import GenerateDialog from "@/components/GenerateDialog.vue";
 import {$message} from "@/componsables/element-plus";
 import ResourceItem from "@/views/ResourceManage/_components/ResourceItem.vue";
 import {ResourceTypes} from "@/componsables/apis/ResourceTypes";
+import {$api} from "@/componsables/api";
 
 
 /** ===== 表头筛选-start ===== **/
@@ -106,13 +107,20 @@ function handleDelete(index: number) {
 /** ===== 删除素材-end ===== **/
 
 /** ===== radio切换-start ===== **/
-function handleChange(index: string) {
+async function handleChange(index: string) {
   if (index === '1') {
+    // TODO: 发送默认拉取请求
+    // await getPage();
+    tableData.value = defaultItem // 暂时赋值
     $message({
       message: '全部',
       type: 'info'
     })
   } else {
+    // TODO: 发送收藏请求
+    // isCollection.value = 1
+    // await getPage();
+    tableData.value = [] // 暂时清空
     $message({
       message: '收藏',
       type: 'info'
@@ -120,6 +128,17 @@ function handleChange(index: string) {
   }
 }
 /** ===== radio切换-end ===== **/
+
+/** ===== 获取分页-start ===== **/
+const pageNo = ref<number>(1)
+const isCollection = ref<number>(0)
+async function getPage() {
+  await $api.getList(pageNo.value, isCollection.value).then((res: any) => {
+    // TODO: 转换获取到的数据
+    // tableData.value = somethings
+  });
+}
+/** ===== 获取分页-end ===== **/
 </script>
 
 <template>
@@ -159,7 +178,7 @@ function handleChange(index: string) {
               class="w-full h-full"
           >
             <div
-                v-if="tableData"
+                v-if="tableData.length"
                 class="w-full h-full grid grid-cols-5 p-4 gap-2"
             >
               <div

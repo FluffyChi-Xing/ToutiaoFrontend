@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import {$message} from "@/componsables/element-plus";
 import { useRouter } from "vue-router";
 import {$api} from "@/componsables/api";
-import axios from "axios";
 
 
 const swiperList = [

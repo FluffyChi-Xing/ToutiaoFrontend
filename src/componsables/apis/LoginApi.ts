@@ -1,4 +1,4 @@
-import {$request} from "@/componsables/request";
+import {$request, requestEnums} from "@/componsables/request";
 
 const base = 'http://localhost:51602'
 
@@ -17,5 +17,5 @@ export function LoginIn(username: string, password: string) {
         password: password
     }
     // 发送请求
-    return $request(requestUrl, 'POST', data)
+    return $request(requestUrl, 'POST' as requestEnums, data)
 }
