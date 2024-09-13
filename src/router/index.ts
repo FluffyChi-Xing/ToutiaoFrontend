@@ -91,9 +91,20 @@ const router = createRouter({
           component: () => import('@/views/FanManage/index.vue')
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/Login/index.vue')
     }
   ]
 })
+
+function getToken() {
+  const token = localStorage.getItem('token')
+  return !!token;
+  // TODO 验证token是否过期
+}
 
 router.beforeEach(async (to) => {
   NProgress.start()
@@ -106,6 +117,15 @@ router.beforeEach(async (to) => {
   }
   if (to.path === '/contentList') {
     return '/contentList/paperList'
+  }
+  if (getToken()) {
+    if (to.path === '/login') {
+      return '/dashboard/home'
+    }
+  } else {
+    if (to.path !== '/login') {
+      return '/login'
+    }
   }
 })
 

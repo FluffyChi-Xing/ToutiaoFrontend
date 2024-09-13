@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import {$message} from "@/componsables/element-plus";
 import SvgIcon from "@/components/SvgIcon.vue";
+import { useRouter } from "vue-router";
 import GenerateDialog from "@/components/GenerateDialog.vue";
 
 
@@ -11,6 +12,8 @@ withDefaults(defineProps<{
   shape: 'circle'
 })
 
+
+const router = useRouter()
 /** ===== 退出登录-start ===== **/
 // 用户头像
 const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
@@ -28,6 +31,7 @@ function handleConfirm(index: boolean) {
       message: '退出成功',
       type: 'success'
     })
+    router.push('/login')
   } else {
     $message({
       message: '取消',
