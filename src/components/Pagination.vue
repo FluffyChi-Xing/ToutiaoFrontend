@@ -15,16 +15,19 @@ const emits = defineEmits(['change:currentPage'])
 function handleChange(index: number) {
   emits('change:currentPage', index)
 }
+const pageSize = 10
 </script>
 
 <template>
   <div class="w-60 h-full flex">
     <el-pagination
         layout="prev, pager, next"
-        :page-count="total"
+        :total="total"
         :current-page="currentPage"
         :background="background"
         :hide-on-single-page="hide"
+        :page-size="pageSize"
+        size="default"
         @update:current-page="handleChange"
     />
   </div>

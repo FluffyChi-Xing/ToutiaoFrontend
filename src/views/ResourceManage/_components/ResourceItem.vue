@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 预留接口
 import {Delete, Star} from "@element-plus/icons-vue";
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {computed} from "vue";
 import GenerateDialog from "@/components/GenerateDialog.vue";
 
@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   isCollect?: boolean,
   sign?: boolean
 }>(), {
-  imgUrl: 'https://picsum.photos/200/300?1',
+  imgUrl: 'src/assets/img/error-img.png',
   id: 1
 })
 
@@ -38,12 +38,26 @@ watch(() => props.sign, () => {
   dialogVisible.value = false
 })
 /** ===== 删除-end ===== **/
+
+/** ===== 图片-start ===== **/
+const url = ref<string>()
+function handleInit() {
+  url.value = props.imgUrl
+}
+function handleError() {
+  // let random = Math.random() * 10
+  url.value = `src/assets/img/error-img.png`
+}
+onMounted(() => {
+  handleInit()
+})
+/** ===== 图片-end ===== **/
 </script>
 
 <template>
-  <div class="w-52 h-auto flex flex-col item-card bg-pageBg rounded-[5px] overflow-hidden hover:shadow-md">
+  <div class="w-52 h-auto bg-pageBg block item-card rounded-[5px] overflow-hidden hover:shadow-md">
     <div class="w-full h-40 flex">
-      <img :src="imgUrl" loading="lazy" alt="" class="w-full h-full flex object-cover">
+      <img :src="url" @error="handleError" loading="lazy" alt="" class="w-full h-full flex object-cover">
     </div>
     <div class="w-full h-auto flex flex-col justify-center mt-4 items-center">
       <div class="w-full h-8 flex justify-between">
@@ -86,6 +100,9 @@ watch(() => props.sign, () => {
   transition: all ease 0.5s;
   padding: 16px;
   border: 1px solid transparent;
+  img {
+    border: 1px solid theme('colors.primary');
+  }
 }
 .item-card:hover {
   border-color: theme('colors.primary');

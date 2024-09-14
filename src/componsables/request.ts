@@ -6,15 +6,16 @@ export enum requestEnums {
     PUT = 'PUT',
     DELETE = 'DELETE'
 }
-
-export function $request(url: string, method: requestEnums, data?: any): any {
+const defaultType = 'application/json'
+export function $request(url: string, method: requestEnums, data?: any, contentType?: string): any {
     // 处理请求参数
     const requestConfig: any = {
         method: method,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': contentType ? contentType : defaultType,
             'Accept': '*/*',
             'Connection': 'keep-alive',
+            'token': localStorage.getItem('token')
         },
         url: url,
         data: data
