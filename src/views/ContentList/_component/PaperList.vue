@@ -1,64 +1,47 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import PaperItem from "@/views/ContentList/_component/PaperItem.vue";
-import {ContentListTypes} from "@/componsables/apis/ContentListTypes";
+import type {ContentListTypes} from "@/componsables/apis/ContentListTypes";
 import {$message} from "@/componsables/element-plus";
 import {$api} from "@/componsables/api";
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import {Plus} from "@element-plus/icons-vue";
 import Pagination from "@/components/Pagination.vue";
+import type {FrontendDtos} from "@/componsables/apis/FrontendDtos";
+import {$stores} from "@/componsables/stores";
 
 /** ===== 文章筛选表单-start ===== **/
-const paperStatus = ref<string>('1')
+const paperStatus = ref<string>('9')
 const defaultList = [
   {
     label: '全部',
-    value: '1'
+    value: '9'
   },
   {
     label: '草稿',
-    value: '2'
+    value: '0'
   },
   {
     label: '待审核',
-    value: '3'
+    value: '1'
   },
   {
     label: '审核通过',
-    value: '4'
+    value: '8'
   },
   {
     label: '未过审',
-    value: '5'
-  }
-]
-const optionList = [
-  {
-    label: '频道一',
-    value: '频道一'
-  },
-  {
-    label: '频道二',
-    value: '频道二'
-  },
-  {
-    label: '频道三',
-    value: '频道三'
+    value: '2'
   }
 ]
 const radioList = ref<ContentListTypes.ContentItemTypes[]>(defaultList)
 const keyWord = ref<string>('')
-const select = ref<string>('')
-const options = ref<ContentListTypes.ContentOptions[]>(optionList)
-const fakeImg = (index: number) => {
-  return `https://picsum.photos/200/300?${index}`
-}
-function handleSearch() {
-  $api.paperMockTest().then(res => {
-    console.log('文章列表：', res)
-  })
+const select = ref<string>('1')
+const options = ref<ContentListTypes.ContentOptions[]>([])
+async function handleSearch() {
   if (keyWord.value) {
-    console.log('关键字：', keyWord.value)
+    initData()
+    await getPage();
   } else {
     $message({
       message: '请输入关键字',
@@ -66,13 +49,44 @@ function handleSearch() {
     })
   }
 }
+function initData() {
+  response.value = []
+  pageStore.context = []
+}
+async function handleClear() {
+  keyWord.value = ''
+  initData()
+  await getPage();
+}
+
+async function changeStatus() {
+  initData()
+  await getPage();
+}
+async function gteChannels() {
+  await $api.getChannelList().then((res: any) => {
+    res.data.data?.forEach((item: FrontendDtos.channelDto) => {
+      options.value.push({
+        label: item.name,
+        value: String(item.id)
+      })
+    })
+  })
+}
+async function changeChannel() {
+  initData()
+  await getPage()
+}
+onMounted(async () => {
+  await gteChannels()
+})
 /** ===== 文章筛选表单-end ===== **/
 
 /** ===== 封面更改-start ===== **/
 const dialogVisible = ref<boolean>(false)
 const coverImage = ref<string>('')
 function handleChange(index: number) {
-  console.log('更改封面：', index)
+  // console.log('更改封面：', index)
   dialogVisible.value = true
 }
 function handleConfirm(index: boolean) {
@@ -95,9 +109,37 @@ function handleConfirm(index: boolean) {
 /** ===== 分页-start ===== **/
 const pageNo = ref<number>(1)
 const total = ref<number>(10)
+const pageSize = 10
+const response = ref<FrontendDtos.WmNewsPageVo[]>([])
 const background = ref<boolean>(true)
 const current = ref<number>(1)
 const hidden = ref<boolean>(true)
+const pageStore = $stores.pageStore()
+
+async function getPage() {
+  const req: FrontendDtos.WmNewsPageDto = {
+    page: pageNo.value,
+    size: pageSize,
+    status: Number(paperStatus.value),
+    beginPubDate: null,
+    endPubDate: null,
+    channelId: Number(select.value),
+    keyword: keyWord.value
+  }
+  await $api.getPaperList(req).then((res: any) => {
+    pageStore.context = res.data.data
+    pageStore.context?.forEach((item: FrontendDtos.WmNewsPageVo) => {
+      response.value.push({
+        ...item,
+        content: JSON.parse(item.content)
+      })
+    })
+    // console.log('文章列表：', response.value)
+  })
+}
+onMounted(async () => {
+  await getPage()
+})
 /** ===== 分页-end ===== **/
 </script>
 
@@ -111,7 +153,10 @@ const hidden = ref<boolean>(true)
               label-width="auto"
           >
             <el-form-item label="文章状态">
-              <el-radio-group v-model="paperStatus">
+              <el-radio-group
+                  v-model="paperStatus"
+                  @change="changeStatus"
+              >
                 <el-radio
                     v-for="(item, index) in radioList"
                     :key="index"
@@ -133,6 +178,7 @@ const hidden = ref<boolean>(true)
                   clearable
                   class="w-60"
                   @keydown.enter="handleSearch"
+                  @clear="handleClear"
               />
             </el-form-item>
             <el-form-item label="频道列表">
@@ -140,6 +186,7 @@ const hidden = ref<boolean>(true)
                   v-model="select"
                   placeholder="请选择频道"
                   style="width: 240px"
+                  @change="changeChannel"
               >
                 <el-option
                     v-for="(item, index) in options"
@@ -152,16 +199,34 @@ const hidden = ref<boolean>(true)
           </el-form>
         </div>
         <el-divider direction="horizontal" class="w-full" />
-        <div style="height: calc(100% - 202px)" class="w-full grid grid-cols-5 gap-2 overflow-y-auto">
+        <div style="height: calc(100% - 202px)" class="w-full flex overflow-y-auto">
           <div
-              v-for="item in 9"
-              :key="item"
-              class="col-span-1 w-full h-auto flex"
+              v-if="response.length"
+              class="grid grid-cols-5 gap-2 w-full h-full"
           >
-            <PaperItem
-                :paper-img="fakeImg(item)"
-                @change-cover:index="handleChange"
-                class="mb-2"
+            <div
+                v-for="(item, index) in response"
+                :key="index"
+                class="col-span-1 w-full h-auto flex"
+            >
+              <PaperItem
+                  :paper-img="item.images"
+                  :title="item.title"
+                  :date="item.publishTime"
+                  :desc="item.content[0].value"
+                  :tag1="item.status === 9 ? item.reason : ''"
+                  :tags2="item.status === 9 ? '' : item.reason"
+                  @change-cover:index="handleChange"
+                  class="mb-2"
+              />
+            </div>
+          </div>
+          <div
+              v-else
+              class="w-full h-full flex flex-col justify-center items-center"
+          >
+            <el-empty
+                description="暂无数据"
             />
           </div>
         </div>

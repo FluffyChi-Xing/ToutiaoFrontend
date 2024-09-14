@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 const props = withDefaults(defineProps<{
   id?: number,
   isLoading?: boolean,
@@ -10,17 +10,24 @@ const props = withDefaults(defineProps<{
   tag1?: string,
   tags2?: string
 }>(), {
-  paperImg: 'https://picsum.photos/200/300?1',
+  paperImg: 'src/assets/img/error-img.png',
   title: '暂无标题',
   desc: '文章描述，文章描述，文章描述......',
-  date: '2023-09-19',
   tag1: '已发布',
   id: 0,
 })
 
-
+const imgUrl = ref<string>('')
 const isShow = ref<boolean>(false)
 const emits = defineEmits(['changeCover:index'])
+
+
+function handleInit() {
+  imgUrl.value = props.paperImg
+}
+function handleError() {
+  imgUrl.value = 'src/assets/img/error-img.png'
+}
 function handleEnter() {
   isShow.value = true
 }
@@ -30,6 +37,13 @@ function handleLeave() {
 function handleChange() {
   emits('changeCover:index', props.id)
 }
+function dateFormat(item: any) {
+  let index: number = item.indexOf('T')
+  return item.substring(index, -1);
+}
+onMounted(() => {
+  handleInit()
+})
 </script>
 
 <template>
@@ -52,25 +66,27 @@ function handleChange() {
         更改封面
       </el-button>
       <img
-          :src="paperImg"
+          :src="imgUrl"
           alt=""
           loading="lazy"
-          style="width: 100%; height: 50%; object-fit: cover"
+          style="width: 100%; height: 50%"
+          class="object-cover"
+          @error="handleError"
       >
       <div class="w-full h-1/2 flex flex-col">
         <div class="w-full h-5 flex px-1 whitespace-pre-line text-ellipsis overflow-hidden">
           <span class="font-bold">{{ title }}</span>
         </div>
         <div
-            class="w-full h-16 flex bg-gradient-to-b from-[#FFFFFF00] to-[#4D4D4D99]"
+            class="w-full h-14 flex bg-gradient-to-b from-[#FFFFFF00] to-[#4D4D4D99]"
         >
-          <span class="whitespace-pre-line select-none text-elli p-1 overflow-hidden w-full h-full text-[10px]">{{ desc }}</span>
+          <span class="whitespace-pre-line select-none text-gray-500 text-ellipsis overflow-hidden w-full h-full text-[10px]">{{ desc }}</span>
         </div>
-        <div class="w-full h-5 grid mt-1 grid-cols-3 gap-1 p-1">
+        <div class="w-full h-5 grid mt-1 grid-cols-2 gap-1 p-1">
           <!-- time -->
-          <div class="w-full h-full text-[10px] text-gray-500 align-middle">{{ date }}</div>
+          <div class="w-full h-full text-[10px] text-gray-500 align-middle">{{ dateFormat(props.date) }}</div>
           <!-- tag-1 -->
-          <div class="w-full h-full flex">
+          <div class="w-full h-full flex justify-end">
             <el-tag
                 v-if="tag1"
                 size="small"
@@ -80,13 +96,13 @@ function handleChange() {
             </el-tag>
           </div>
           <!-- tag-2 -->
-          <div class="w-full h-full flex">
+          <div class="w-full h-full flex justify-end">
             <el-tag
                 v-if="tags2"
                 size="small"
                 class="primary_danger_tag"
             >
-              {{ tag1 }}
+              {{ tags2 }}
             </el-tag>
           </div>
         </div>
