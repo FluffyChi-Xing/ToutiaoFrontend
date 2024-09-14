@@ -63,8 +63,13 @@ async function changeStatus() {
   initData()
   await getPage();
 }
+
+/**
+ * 获取频道列表
+ */
 async function gteChannels() {
   await $api.getChannelList().then((res: any) => {
+    pageStore.channelList = res.data.data
     res.data.data?.forEach((item: FrontendDtos.channelDto) => {
       options.value.push({
         label: item.name,

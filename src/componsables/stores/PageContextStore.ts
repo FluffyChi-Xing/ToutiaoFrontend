@@ -4,7 +4,9 @@ import { defineStore } from "pinia";
 
 export const pageStore = defineStore('page', () => {
     const context = ref<FrontendDtos.WmNewsPageVo[]>()
+    const channelList = ref<FrontendDtos.channelDto[]>()
     return {
-        context
+        context,
+        channelList
     };
 })
