@@ -176,6 +176,7 @@ async function handle2Upload(params: File) {
         message: '上传失败',
         type: 'error'
       })
+      imageUrl.value = []
       dialogVisible.value = false
     }
   });

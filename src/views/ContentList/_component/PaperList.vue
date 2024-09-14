@@ -6,6 +6,7 @@ import {$message} from "@/componsables/element-plus";
 import {$api} from "@/componsables/api";
 import GenerateDialog from "@/components/GenerateDialog.vue";
 import {Plus} from "@element-plus/icons-vue";
+import Pagination from "@/components/Pagination.vue";
 
 /** ===== 文章筛选表单-start ===== **/
 const paperStatus = ref<string>('1')
@@ -90,6 +91,14 @@ function handleConfirm(index: boolean) {
   }
 }
 /** ===== 封面更改-end ===== **/
+
+/** ===== 分页-start ===== **/
+const pageNo = ref<number>(1)
+const total = ref<number>(10)
+const background = ref<boolean>(true)
+const current = ref<number>(1)
+const hidden = ref<boolean>(true)
+/** ===== 分页-end ===== **/
 </script>
 
 <template>
@@ -143,7 +152,7 @@ function handleConfirm(index: boolean) {
           </el-form>
         </div>
         <el-divider direction="horizontal" class="w-full" />
-        <div style="height: calc(100% - 162px)" class="w-full grid grid-cols-4 gap-2 overflow-y-auto">
+        <div style="height: calc(100% - 202px)" class="w-full grid grid-cols-5 gap-2 overflow-y-auto">
           <div
               v-for="item in 9"
               :key="item"
@@ -155,6 +164,15 @@ function handleConfirm(index: boolean) {
                 class="mb-2"
             />
           </div>
+        </div>
+        <!-- 分页 -->
+        <div class="w-full h-10 flex justify-center items-center mt-4">
+          <Pagination
+              :total="total"
+              :current-page="current"
+              :background="background"
+              :hidden="hidden"
+          />
         </div>
       </div>
     </el-card>

@@ -57,7 +57,7 @@ onMounted(() => {
 <template>
   <div class="w-52 h-auto bg-pageBg block item-card rounded-[5px] overflow-hidden hover:shadow-md">
     <div class="w-full h-40 flex">
-      <img :src="url" @error="handleError" loading="lazy" alt="" class="w-full h-full flex object-cover">
+      <img :src="url" @error="handleError" loading="lazy" alt="" class="w-full h-full flex object-contain">
     </div>
     <div class="w-full h-auto flex flex-col justify-center mt-4 items-center">
       <div class="w-full h-8 flex justify-between">
