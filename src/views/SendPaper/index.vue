@@ -6,6 +6,9 @@ import {$stores} from "@/componsables/stores";
 import type {FrontendDtos} from "@/componsables/apis/FrontendDtos";
 import {$api} from "@/componsables/api";
 import GenerateDialog from "@/components/GenerateDialog.vue";
+import ResourceSelector from "@/views/SendPaper/_components/ResourceSelector.vue";
+import type {SendPaper} from "@/componsables/apis/SendPaper";
+import {$message} from "@/componsables/element-plus";
 
 
 
@@ -19,7 +22,7 @@ const tags = ref<string>('')
 const channels = ref<string>('')
 const imgUrl = ref<string[]>([])
 const options = ref<ContentListTypes.ContentOptions[]>([])
-const cover = ref<string>('0')
+const cover = ref<string>('2')
 const defaultCover = [
   {
     label: '单图',
@@ -37,16 +40,40 @@ const defaultCover = [
 
 const coverNum = computed(() => {
   switch (cover.value) {
-    case '0':
+    case '0': // 单图
       return 1
-    case '1':
+    case '1': // 三图
       return 3
-    case '2':
+    case '2': // 无图
       return 0
-    default:
-      return 1
+    default: // 默认无图
+      return 0
   }
 })
+
+// 检查封面设置
+function checkCover() {
+  if (selectedImg.value?.length) {
+    switch (selectedImg.value.length) {
+      case 1:
+        imgUrl.value = selectedImg.value
+          cover.value = '0'
+        break;
+      case 3:
+        imgUrl.value = selectedImg.value
+          cover.value = '1'
+        break;
+      case 2:
+        imgUrl.value = selectedImg.value
+          cover.value = '1'
+        break;
+      default:
+        imgUrl.value = []
+          cover.value = '2'
+        break;
+    }
+  }
+}
 /**
  * 获取频道列表
  */
@@ -74,36 +101,73 @@ async function initOptions() {
     await gteChannels()
   }
 }
+// 图片加载失败时，替换为默认图片
 function handleError(index: number) {
   imgUrl.value[index] = 'src/assets/img/error-img.png'
 }
 
-function handleUrl(item: any) {
-  if (!item) {
-    return 'src/assets/img/error-img.png'
-  } else {
-    return item
-  }
-}
-
 onMounted(async () => {
   await initOptions()
+  checkCover()
 })
 /** ===== 封面设置-end ===== **/
 
 /** ===== 选择图片-start ===== **/
 const dialogVisible = ref<boolean>(false)
+const fakeList = [
+  {
+    id: 1,
+    url: 'https://picsum.photos/200/300?1'
+  },
+  {
+    id: 2,
+    url: 'https://picsum.photos/200/300?2'
+  },
+  {
+    id: 3,
+    url: 'https://picsum.photos/200/300?3'
+  },
+  {
+    id: 4,
+    url: 'https://picsum.photos/200/300?4'
+  },
+  {
+    id: 5,
+    url: 'https://picsum.photos/200/300?5'
+  }
+]
+const itemList = ref<SendPaper.itemList[]>(fakeList)
+const selectedImg = ref<string[]>([]) // 选中图片的下标
 
 function handleSelect() {
   dialogVisible.value = true
 }
 
+// 将选中的图片下标转换为图片地址
+function index2url(item: string) {
+  if (item) {
+    const foundItem = fakeList.find((value: SendPaper.itemList) => value.id === Number(item));
+    return foundItem ? foundItem.url : 'src/assets/img/error-img.png';
+  } else {
+    return 'src/assets/img/error-img.png';
+  }
+}
+
 function handleClose(index: boolean) {
   if (index) {
     dialogVisible.value =false
+    checkCover()
+    $message({
+      message: `已选择了 ${selectedImg.value?.length} 张图片`,
+      type: 'success'
+    })
   } else {
     dialogVisible.value = false
   }
+}
+
+function handleChange(item: string[]) {
+  selectedImg.value = item
 }
 /** ===== 选择图片-end ===== **/
 </script>
@@ -133,11 +197,17 @@ function handleClose(index: boolean) {
           </div>
           <!-- banner pane -->
           <div class="w-full h-10 flex justify-end">
-            <el-button
-                icon="Picture"
-                class="w-10 h-10 outline-none primary-success-btn"
-                @click="handleSelect"
-            />
+            <el-tooltip
+                effect="dark"
+                content="选择封面"
+                placement="bottom"
+            >
+              <el-button
+                  icon="Picture"
+                  class="w-10 h-10 outline-none primary-success-btn"
+                  @click="handleSelect"
+              />
+            </el-tooltip>
           </div>
           <!-- 文本编辑器 -->
           <div
@@ -205,7 +275,7 @@ function handleClose(index: boolean) {
                   class="w-[200px] h-full flex mr-2 flex-col"
               >
                 <img
-                    :src="handleUrl(imgUrl[item])"
+                    :src="index2url(imgUrl[item - 1])"
                     alt=""
                     loading="lazy"
                     @error="handleError(item)"
@@ -228,7 +298,11 @@ function handleClose(index: boolean) {
         title="选择图片"
         @confirm:sign="handleClose"
     >
-      <span class="text-red-500">请选择图片</span>
+      <ResourceSelector
+          :sign="dialogVisible"
+          :item-list="itemList"
+          @change="handleChange"
+      />
     </GenerateDialog>
   </div>
 </template>
