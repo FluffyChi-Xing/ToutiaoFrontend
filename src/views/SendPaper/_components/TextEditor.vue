@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
+import {onBeforeUnmount, ref, shallowRef, onMounted, watch} from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 /** ===== 富文本编辑器-start ===== **/
@@ -11,7 +11,7 @@ const mode = 'default'
 const toolbarConfig = {}
 const editorConfig = { placeholder: '请输入内容...' }
 // 内容 HTML
-const valueHtml = ref('<p>hello</p>')
+const valueHtml = ref<string>('<p>hello</p>')
 
 // 模拟 ajax 异步获取内容
 onMounted(() => {
@@ -20,16 +20,32 @@ onMounted(() => {
   }, 1500)
 })
 
+// 防抖函数，向父组件传递内容
+const emits = defineEmits(['change'])
+let timer: any = null
+function debounce() {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  timer = setTimeout(() => {
+    emits('change', valueHtml.value)
+  }, 500)
+  if (editorRef.value === null) return;
+}
 
+watch(() => valueHtml.value, () => {
+  debounce()
+})
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
   const editor = editorRef.value
+  console.log('editor', valueHtml.value)
   if (editor == null) return
   editor.destroy()
 })
 
-const handleCreated = (editor) => {
+const handleCreated = (editor: any) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
 /** ===== 富文本编辑器-end ===== **/

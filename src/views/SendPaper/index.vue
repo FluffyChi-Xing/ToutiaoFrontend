@@ -15,6 +15,10 @@ import {$message} from "@/componsables/element-plus";
 const pageStore = $stores.pageStore()
 /** ===== 富文本编辑器-start ===== **/
 const title = ref<string>('')
+const innerValue = ref<string>('')
+function getInner(item: string) {
+  innerValue.value = item
+}
 /** ===== 富文本编辑器-end ===== **/
 
 /** ===== 封面设置-start ===== **/
@@ -37,6 +41,33 @@ const defaultCover = [
     value: '2'
   }
 ]
+const dialogVisible = ref<boolean>(false)
+const fakeList = [
+  {
+    id: 1,
+    url: 'https://picsum.photos/200/300?1'
+  },
+  {
+    id: 2,
+    url: 'https://picsum.photos/200/300?2'
+  },
+  {
+    id: 3,
+    url: 'https://picsum.photos/200/300?3'
+  },
+  {
+    id: 4,
+    url: 'https://picsum.photos/200/300?4'
+  },
+  {
+    id: 5,
+    url: 'https://picsum.photos/200/300?5'
+  }
+]
+const itemList = ref<SendPaper.itemList[]>(fakeList)
+const selectedImg = ref<string[]>([]) // 选中图片的下标
+
+
 
 const coverNum = computed(() => {
   switch (cover.value) {
@@ -110,34 +141,6 @@ onMounted(async () => {
   await initOptions()
   checkCover()
 })
-/** ===== 封面设置-end ===== **/
-
-/** ===== 选择图片-start ===== **/
-const dialogVisible = ref<boolean>(false)
-const fakeList = [
-  {
-    id: 1,
-    url: 'https://picsum.photos/200/300?1'
-  },
-  {
-    id: 2,
-    url: 'https://picsum.photos/200/300?2'
-  },
-  {
-    id: 3,
-    url: 'https://picsum.photos/200/300?3'
-  },
-  {
-    id: 4,
-    url: 'https://picsum.photos/200/300?4'
-  },
-  {
-    id: 5,
-    url: 'https://picsum.photos/200/300?5'
-  }
-]
-const itemList = ref<SendPaper.itemList[]>(fakeList)
-const selectedImg = ref<string[]>([]) // 选中图片的下标
 
 function handleSelect() {
   dialogVisible.value = true
@@ -169,7 +172,7 @@ function handleClose(index: boolean) {
 function handleChange(item: string[]) {
   selectedImg.value = item
 }
-/** ===== 选择图片-end ===== **/
+/** ===== 封面设置-end ===== **/
 </script>
 
 <template>
@@ -214,7 +217,9 @@ function handleChange(item: string[]) {
               style="height: calc(100% - 80px)"
               class="w-full flex flex-col"
           >
-            <TextEditor />
+            <TextEditor
+                @change="getInner"
+            />
           </div>
         </div>
         <!-- 封面设置 -->
