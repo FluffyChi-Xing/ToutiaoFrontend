@@ -9,9 +9,12 @@ import GenerateDialog from "@/components/GenerateDialog.vue";
 import ResourceSelector from "@/views/SendPaper/_components/ResourceSelector.vue";
 import type {SendPaper} from "@/componsables/apis/SendPaper";
 import {$message} from "@/componsables/element-plus";
+import { useRouter } from 'vue-router'
 
 
 
+
+const router = useRouter()
 const pageStore = $stores.pageStore()
 /** ===== 富文本编辑器-start ===== **/
 const title = ref<string>('')
@@ -142,6 +145,7 @@ onMounted(async () => {
   checkCover()
 })
 
+// 选择封面图片
 function handleSelect() {
   dialogVisible.value = true
 }
@@ -153,6 +157,17 @@ function index2url(item: string) {
     return foundItem ? foundItem.url : 'src/assets/img/error-img.png';
   } else {
     return 'src/assets/img/error-img.png';
+  }
+}
+// 获取图片地址
+function getImageUrl(data: string[]) {
+  if (data.length) {
+    return data.map((item: string) => {
+      const foundItem = fakeList.find((value: SendPaper.itemList) => value.id === Number(item));
+      return foundItem ? foundItem.url : 'https://picsum.photos/200/300';
+    })
+  } else {
+    return []
   }
 }
 
@@ -173,6 +188,64 @@ function handleChange(item: string[]) {
   selectedImg.value = item
 }
 /** ===== 封面设置-end ===== **/
+
+/** ===== 发布文章-start ===== **/
+const paperParams = ref<SendPaper.paperDto>()
+function resetParams() {
+  title.value = ''
+  innerValue.value = ''
+  tags.value = ''
+  channels.value = ''
+  imgUrl.value = []
+  cover.value = '2'
+  selectedImg.value = []
+}
+async function submitOrSave(index: number) {
+  if (innerValue.value.length > 11) {
+    paperParams.value = {
+      channelId: Number(channels.value),
+      content: JSON.stringify([
+        {
+          type: 'text',
+          value: innerValue.value
+        },
+        {
+          type: 'image',
+          value: getImageUrl(selectedImg.value)[0]
+        }
+      ]),
+      images: getImageUrl(selectedImg.value),
+      labels: tags.value,
+      publishTime: new Date(),
+      status: index,
+      submitedTime: new Date(),
+      title: title.value,
+      type: coverNum.value,
+      id: 0
+    }
+    await $api.submitPaper(paperParams.value).then((res: any) => {
+      if (res.data.code === 200) {
+        $message({
+          type: "success",
+          message: "提交成功"
+        })
+        resetParams()
+        router.push('/contentList')
+      } else {
+        $message({
+          type: "error",
+          message: `提交失败, ${res.data.errorMessage}`
+        })
+      }
+    })
+  } else {
+    $message({
+      type: "warning",
+      message: "请填写文章内容"
+    })
+  }
+}
+/** ===== 发布文章-end ===== **/
 </script>
 
 <template>
@@ -290,8 +363,8 @@ function handleChange(item: string[]) {
             </div>
             <div class="w-full h-10 flex justify-end mt-auto">
               <div class="w-auto h-full flex">
-                <el-button icon="Select" class="primary-success-btn mr-2">提交</el-button>
-                <el-button icon="Document" class="primary-danger-btn">存入草稿</el-button>
+                <el-button @click="submitOrSave(1)" icon="Select" class="primary-success-btn mr-2">提交</el-button>
+                <el-button @click="submitOrSave(0)" icon="Document" class="primary-danger-btn">存入草稿</el-button>
               </div>
             </div>
           </div>

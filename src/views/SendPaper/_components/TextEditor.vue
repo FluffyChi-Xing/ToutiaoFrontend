@@ -11,14 +11,7 @@ const mode = 'default'
 const toolbarConfig = {}
 const editorConfig = { placeholder: '请输入内容...' }
 // 内容 HTML
-const valueHtml = ref<string>('<p>hello</p>')
-
-// 模拟 ajax 异步获取内容
-onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
-  }, 1500)
-})
+const valueHtml = ref<string>('')
 
 // 防抖函数，向父组件传递内容
 const emits = defineEmits(['change'])
@@ -40,7 +33,7 @@ watch(() => valueHtml.value, () => {
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
   const editor = editorRef.value
-  console.log('editor', valueHtml.value)
+  // console.log('editor', valueHtml.value)
   if (editor == null) return
   editor.destroy()
 })
