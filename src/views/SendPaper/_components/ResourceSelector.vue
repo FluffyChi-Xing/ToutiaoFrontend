@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue'
 import type {SendPaper} from "@/componsables/apis/SendPaper";
+import Images from "@/views/SendPaper/_components/Images.vue";
 const props = withDefaults(defineProps<{
   itemList?: SendPaper.itemList[];
   sign?: boolean;
@@ -21,14 +22,6 @@ function initList() {
 }
 function destroyed() {
   selected.value = []
-  // console.log('destroyed')
-}
-function handleError(index: number) {
-  localList.value?.find((item: SendPaper.itemList) => {
-    if (item.id === index) {
-      localList.value[index].url = 'src/assets/img/error-img.png'
-    }
-  })
 }
 
 // 选中回调
@@ -63,7 +56,9 @@ watch(() => props.sign, () => {
       >
         <template #default>
           <div class="w-full h-full flex bg-gray-300">
-            <img :src="item.url" alt="" @error="handleError" loading="lazy" class="w-[100px] h-[100px] flex object-cover">
+            <Images
+                :img-url="item.url"
+            />
           </div>
         </template>
       </el-checkbox>

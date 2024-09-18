@@ -45,29 +45,7 @@ const defaultCover = [
   }
 ]
 const dialogVisible = ref<boolean>(false)
-const fakeList = [
-  {
-    id: 1,
-    url: 'https://picsum.photos/200/300?1'
-  },
-  {
-    id: 2,
-    url: 'https://picsum.photos/200/300?2'
-  },
-  {
-    id: 3,
-    url: 'https://picsum.photos/200/300?3'
-  },
-  {
-    id: 4,
-    url: 'https://picsum.photos/200/300?4'
-  },
-  {
-    id: 5,
-    url: 'https://picsum.photos/200/300?5'
-  }
-]
-const itemList = ref<SendPaper.itemList[]>(fakeList)
+const itemList = ref<SendPaper.itemList[]>([])
 const selectedImg = ref<string[]>([]) // 选中图片的下标
 
 
@@ -83,6 +61,33 @@ const coverNum = computed(() => {
     default: // 默认无图
       return 0
   }
+})
+
+
+/**
+ * 分页获取资源
+ * @param pageNo
+ * @param isCollection 0: 全部资源 1: 我的收藏
+ */
+const pageNo = ref<number>(1)
+const isCollection = ref<number>(0)
+async function getResource() {
+  await $api.getList(pageNo.value, isCollection.value).then((res: any) => {
+    if (res.data.data) {
+      res.data.data.forEach((item: any) => {
+        itemList.value.push({
+          id: item.id,
+          url: item.url
+        })
+      })
+    } else {
+      itemList.value = []
+    }
+  })
+}
+
+onMounted( async () => {
+  await getResource();
 })
 
 // 检查封面设置
@@ -153,7 +158,7 @@ function handleSelect() {
 // 将选中的图片下标转换为图片地址
 function index2url(item: string) {
   if (item) {
-    const foundItem = fakeList.find((value: SendPaper.itemList) => value.id === Number(item));
+    const foundItem = itemList.value.find((value: SendPaper.itemList) => value.id === Number(item));
     return foundItem ? foundItem.url : 'src/assets/img/error-img.png';
   } else {
     return 'src/assets/img/error-img.png';
@@ -163,7 +168,7 @@ function index2url(item: string) {
 function getImageUrl(data: string[]) {
   if (data.length) {
     return data.map((item: string) => {
-      const foundItem = fakeList.find((value: SendPaper.itemList) => value.id === Number(item));
+      const foundItem = itemList.value.find((value: SendPaper.itemList) => value.id === Number(item));
       return foundItem ? foundItem.url : 'https://picsum.photos/200/300';
     })
   } else {
@@ -173,12 +178,19 @@ function getImageUrl(data: string[]) {
 
 function handleClose(index: boolean) {
   if (index) {
-    dialogVisible.value =false
-    checkCover()
-    $message({
-      message: `已选择了 ${selectedImg.value?.length} 张图片`,
-      type: 'success'
-    })
+    if (selectedImg.value?.length) {
+      dialogVisible.value =false
+      checkCover()
+      $message({
+        message: `已选择了 ${selectedImg.value?.length} 张图片`,
+        type: 'success'
+      })
+    } else {
+      $message({
+        type: 'warning',
+        message: '请选择图片'
+      })
+    }
   } else {
     dialogVisible.value = false
   }

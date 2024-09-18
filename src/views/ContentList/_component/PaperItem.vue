@@ -50,7 +50,7 @@ onMounted(() => {
   <div
       @mouseenter="handleEnter"
       @mouseleave="handleLeave"
-      class="w-52 h-60 hover:shadow-md flex relative flex-col rounded-lg overflow-hidden"
+      class="w-52 h-60 hover:shadow-md item-card flex relative flex-col rounded-lg overflow-hidden"
   >
     <el-skeleton
         :loading="isLoading"
@@ -80,7 +80,10 @@ onMounted(() => {
         <div
             class="w-full h-14 flex bg-gradient-to-b from-[#FFFFFF00] to-[#4D4D4D99]"
         >
-          <span class="whitespace-pre-line select-none text-gray-500 text-ellipsis overflow-hidden w-full h-full text-[10px]">{{ desc }}</span>
+          <span
+              v-html="desc"
+              class="whitespace-pre-line p-1 select-none text-gray-500 text-ellipsis overflow-hidden w-full h-full text-[10px]"
+          />
         </div>
         <div class="w-full h-5 grid mt-1 grid-cols-2 gap-1 p-1">
           <!-- time -->
@@ -113,4 +116,10 @@ onMounted(() => {
 
 <style scoped>
 @import "@/assets/css/element-edit.scss";
+.item-card {
+  border: 1px solid #ebeef5;
+}
+.item-card:hover {
+  border-color: theme('colors.primary');
+}
 </style>
