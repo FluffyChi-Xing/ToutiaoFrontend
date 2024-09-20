@@ -1,7 +1,7 @@
 import {$request, requestEnums} from "@/componsables/request";
 import type {FrontendDtos} from "@/componsables/apis/FrontendDtos";
 
-const baseUrl = 'http://localhost:51602/wemedia'
+const baseUrl = 'http://localhost:5160/wemedia'
 
 
 // 分页查询素材列表

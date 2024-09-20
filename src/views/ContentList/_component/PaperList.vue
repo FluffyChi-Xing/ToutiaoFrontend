@@ -220,7 +220,7 @@ onMounted(async () => {
                   :date="item.publishTime"
                   :desc="item.content[0].value"
                   :tag1="item.status === 9 ? item.reason : ''"
-                  :tags2="item.status === 9 ? '' : item.reason"
+                  :tags2="item.status === 9 ? '' : '内容违规'"
                   @change-cover:index="handleChange"
                   class="mb-2"
               />

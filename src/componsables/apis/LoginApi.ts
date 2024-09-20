@@ -1,6 +1,6 @@
 import {$request, requestEnums} from "@/componsables/request";
 
-const base = 'http://localhost:51602'
+const base = 'http://localhost:5160'
 
 // interface RequestObj {
 //     url: string;

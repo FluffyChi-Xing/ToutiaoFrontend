@@ -85,11 +85,11 @@ onMounted(() => {
               class="whitespace-pre-line p-1 select-none text-gray-500 text-ellipsis overflow-hidden w-full h-full text-[10px]"
           />
         </div>
-        <div class="w-full h-5 grid mt-1 grid-cols-2 gap-1 p-1">
+        <div class="w-full h-5 grid mt-1 grid-cols-2 gap-1 px-1">
           <!-- time -->
           <div class="w-full h-full text-[10px] text-gray-500 align-middle">{{ dateFormat(props.date) }}</div>
           <!-- tag-1 -->
-          <div class="w-full h-full flex justify-end">
+          <div class="w-full h-full flex overflow-hidden justify-end">
             <el-tag
                 v-if="tag1"
                 size="small"
@@ -97,13 +97,11 @@ onMounted(() => {
             >
               {{ tag1 }}
             </el-tag>
-          </div>
-          <!-- tag-2 -->
-          <div class="w-full h-full flex justify-end">
+            <!-- tag-2 -->
             <el-tag
                 v-if="tags2"
                 size="small"
-                class="primary_danger_tag"
+                class="primary_danger_tag w-full"
             >
               {{ tags2 }}
             </el-tag>
